@@ -43,20 +43,15 @@ final class WindowParams {
     }
 
     public static WindowParams createAppFloatWindow() {
-        int type;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        }
+        int type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
         return create().setFormat(PixelFormat.RGBA_8888)
                 .setGravity(Gravity.TOP | Gravity.LEFT)
                 .setType(type)
-                .setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
                 .addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
-                .addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
-                .addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR)
-                .addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+                .removeFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                .removeFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH)
+                .removeFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+                .removeFlags(WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR);
     }
 
     private WindowParams(WindowManager.LayoutParams params) {
@@ -353,13 +348,19 @@ final class WindowParams {
      * FLAG_BLUR_BEHIND = 0x00000004;
      * <p>
      * 不许获得焦点。
-     * 不能获得按键输入焦点，所以不能向它发送按键或按钮事件。那些时间将发送给它后面的可以获得焦点的窗口。此选项还会设置FLAG_NOT_TOUCH_MODAL选项。设置此选项，意味着窗口不能与软输入法进行交互，所以它的Z序独立于任何活动的输入法（换句话说，它可以全屏显示，如果需要的话，可覆盖输入法窗口）。要修改这一行为，可参考FLAG_ALT_FOCUSALBE_IM选项。
+     * 不能获得按键输入焦点，所以不能向它发送按键或按钮事件。
+     * 那些时间将发送给它后面的可以获得焦点的窗口。
+     * 此选项还会设置FLAG_NOT_TOUCH_MODAL选项。
+     * 设置此选项，意味着窗口不能与软输入法进行交互，所以它的Z序独立于任何活动的输入法（换句话说，它可以全屏显示，
+     * 如果需要的话，可覆盖输入法窗口）。要修改这一行为，可参考FLAG_ALT_FOCUSALBE_IM选项。
      * FLAG_NOT_FOCUSABLE = 0x00000008;
      * <p>
      * 不接受触摸屏事件。
      * FLAG_NOT_TOUCHABLE = 0x00000010;
      * <p>
-     * 当窗口可以获得焦点（没有设置 FLAG_NOT_FOCUSALBE 选项）时，仍然将窗口范围之外的点设备事件（鼠标、触摸屏）发送给后面的窗口处理。否则它将独占所有的点设备事件，而不管它们是不是发生在窗口范围内。
+     * 当窗口可以获得焦点（没有设置 FLAG_NOT_FOCUSALBE 选项）时，
+     * 仍然将窗口范围之外的点设备事件（鼠标、触摸屏）发送给后面的窗口处理。
+     * 否则它将独占所有的点设备事件，而不管它们是不是发生在窗口范围内。
      * FLAG_NOT_TOUCH_MODAL = 0x00000020;
      * <p>
      * 如果设置了这个标志，当设备休眠时，点击触摸屏，设备将收到这个第一触摸事件。
